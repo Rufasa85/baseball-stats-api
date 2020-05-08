@@ -12,7 +12,12 @@ var db = require('./models');
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+// app.use(cors({
+//     origin:["http://localhost:3000"]
+// }));
+app.use(cors({
+    origin:["deplyed site will go here"]
+}));
 // Static directory
 // app.use(express.static('public'));
 
@@ -26,34 +31,6 @@ app.get("/",(req,res)=>{
     res.send("welcome to my api!")
 })
 
-app.get('/fakeplayers',(req,res)=>{
-    res.json(
-        [
-            {
-                id:1,
-                name:"Joe Rehfuss",
-                team: "New York Mets",
-                at_bats: 300,
-                singles:12,
-                doubles:3,
-                triples:0,
-                home_runs:1,
-                runs_batted_in: 3
-            },
-            {
-                id:2,
-                name:"Mike Trout",
-                team: "Los Angeles Angels",
-                at_bats: 300,
-                singles:120,
-                doubles:30,
-                triples:3,
-                home_runs:10,
-                runs_batted_in: 50
-            },
-        ]
-        )
-})
 
 app.get("/api/players",(req,res)=>{
     db.Player.findAll().then(players=>{
@@ -67,7 +44,40 @@ app.post("/api/players",(req,res)=>{
     })
 })
 
-db.sequelize.sync({ force: true }).then(function() {
+app.get("/api/players/:id",(req,res)=>{
+    db.Player.findOne({
+        where:{
+            id:req.params.id
+        }
+    }).then(player=>{
+        res.json(player)
+    })
+})
+
+app.put("/api/players/:id",(req,res)=>{
+    db.Player.update(
+        req.body,
+        {
+            where:{
+                id:req.params.id
+            }
+        }
+    ).then(playerData=>{
+        res.json(playerData);
+    })
+})
+
+app.delete("/api/players/:id",(req,res)=>{
+    db.Player.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(data=>{
+        res.json(data)
+    })
+})
+
+db.sequelize.sync({ force: false }).then(function() {
     app.listen(PORT, function() {
     console.log('App listening on PORT ' + PORT);
     });
