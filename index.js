@@ -16,7 +16,7 @@ app.use(express.json());
 //     origin:["http://localhost:3000"]
 // }));
 app.use(cors({
-    origin:["deplyed site will go here"]
+    origin:["https://joes-baseball-frontend.herokuapp.com"]
 }));
 // Static directory
 // app.use(express.static('public'));
